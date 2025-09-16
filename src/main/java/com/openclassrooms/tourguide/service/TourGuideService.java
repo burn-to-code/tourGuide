@@ -34,7 +34,6 @@ public class TourGuideService {
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
-	boolean testMode = true;
 
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
@@ -42,13 +41,11 @@ public class TourGuideService {
 		
 		Locale.setDefault(Locale.US);
 
-		if (testMode) {
-			logger.info("TestMode enabled");
-			logger.debug("Initializing users");
-			initializeInternalUsers();
-			logger.debug("Finished initializing users");
-		}
-		tracker = new Tracker(this);
+        logger.info("TestMode enabled");
+        logger.debug("Initializing users");
+        initializeInternalUsers();
+        logger.debug("Finished initializing users");
+        tracker = new Tracker(this);
 		addShutDownHook();
 	}
 
@@ -162,7 +159,7 @@ public class TourGuideService {
 
 			internalUserMap.put(userName, user);
 		});
-		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
+        logger.debug("Created {} internal test users.", InternalTestHelper.getInternalUserNumber());
 	}
 
 	private void generateUserLocationHistory(User user) {
