@@ -24,14 +24,14 @@ public class TestPerformance {
 	/*
 	 * A note on performance improvements:
 	 *
-	 * The number of users generated for the high volume tests can be easily
+	 * The number of users generated for the high-volume tests can be easily
 	 * adjusted via this method:
 	 *
 	 * InternalTestHelper.setInternalUserNumber(100000);
 	 *
 	 *
 	 * These tests can be modified to suit new solutions, just as long as the
-	 * performance metrics at the end of the tests remains consistent.
+	 * performance metrics at the end of the tests remain consistent.
 	 *
 	 * These are performance metrics that we are trying to hit:
 	 *
@@ -49,7 +49,7 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		// Users should be incremented up to 100,000, and test finishes within 15
+		// Users should be incremented up to 100,000, and the test finishes within 15
 		// minutes
 		InternalTestHelper.setInternalUserNumber(100000);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -74,7 +74,7 @@ public class TestPerformance {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
-		// Users should be incremented up to 100,000, and test finishes within 20
+		// Users should be incremented up to 100,000, and the test finishes within 20
 		// minutes
 		InternalTestHelper.setInternalUserNumber(100000);
 

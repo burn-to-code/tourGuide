@@ -15,8 +15,8 @@ public class User {
 	private String phoneNumber;
 	private String emailAddress;
 	private Date latestLocationTimestamp;
-	private List<VisitedLocation> visitedLocations = new CopyOnWriteArrayList<>();
-	private List<UserReward> userRewards = new CopyOnWriteArrayList<>();
+	private final List<VisitedLocation> visitedLocations = new CopyOnWriteArrayList<>();
+	private final List<UserReward> userRewards = new CopyOnWriteArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
@@ -33,27 +33,33 @@ public class User {
 	public String getUserName() {
 		return userName;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	public String getPhoneNumber() {
+
+    @SuppressWarnings("unused")
+    public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
+    @SuppressWarnings("unused")
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public String getEmailAddress() {
 		return emailAddress;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public void setLatestLocationTimestamp(Date latestLocationTimestamp) {
 		this.latestLocationTimestamp = latestLocationTimestamp;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public Date getLatestLocationTimestamp() {
 		return latestLocationTimestamp;
 	}
@@ -65,7 +71,8 @@ public class User {
 	public List<VisitedLocation> getVisitedLocations() {
 		return visitedLocations;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public void clearVisitedLocations() {
 		visitedLocations.clear();
 	}
@@ -85,7 +92,8 @@ public class User {
 	public UserPreferences getUserPreferences() {
 		return userPreferences;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public void setUserPreferences(UserPreferences userPreferences) {
 		this.userPreferences = userPreferences;
 	}
@@ -97,7 +105,8 @@ public class User {
 	public void setTripDeals(List<Provider> tripDeals) {
 		this.tripDeals = tripDeals;
 	}
-	
+
+    @SuppressWarnings("unused")
 	public List<Provider> getTripDeals() {
 		return tripDeals;
 	}
