@@ -60,7 +60,7 @@
             <artifactId>tripPricer</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/tripPricer.jar</systemPath>
+            <systemPath>${project.basedir}/libs/TripPricer.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -68,7 +68,7 @@
             <artifactId>rewardCentral</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/rewardCentral.jar</systemPath>
+            <systemPath>${project.basedir}/libs/RewardCentral.jar</systemPath>
         </dependency>
 
 	</dependencies>
