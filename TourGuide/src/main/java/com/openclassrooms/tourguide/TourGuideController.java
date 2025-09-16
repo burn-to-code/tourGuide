@@ -3,7 +3,6 @@ package com.openclassrooms.tourguide;
 import java.util.List;
 
 import com.openclassrooms.tourguide.dto.NearbyAttractionDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +18,11 @@ import tripPricer.Provider;
 @RestController
 public class TourGuideController {
 
-	@Autowired
 	TourGuideService tourGuideService;
+
+    public TourGuideController(TourGuideService tourGuideService) {
+    	this.tourGuideService = tourGuideService;
+    }
 	
     @RequestMapping("/")
     public String index() {
@@ -60,6 +62,5 @@ public class TourGuideController {
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
     }
-   
 
 }
