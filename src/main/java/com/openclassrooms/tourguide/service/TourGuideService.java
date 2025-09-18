@@ -103,6 +103,9 @@ public class TourGuideService {
      * <p>Cette méthode permet de réduire le temps total de traitement lorsqu'il y a un grand
      * nombre d'utilisateurs.</p>
      *
+     * Aucun Return de la localisation des utilisateurs n'est nécéssaire. Car elle est persisté avec calculateRewards
+     * dans la classe User. Si besoin, on peut passer par une map<User, VisitedLocation> si cela devient nécessaire.
+     *
      * @param users la liste des utilisateurs dont les localisations doivent être suivies
      */
     public void trackUsersLocationsParallel(List<User> users) {
@@ -120,6 +123,14 @@ public class TourGuideService {
         }
     }
 
+    /**
+     * Retourne les cinq attractions les plus proches d'une localisation donnée.
+     *
+     * <p>Les attractions sont triées par distance croissante depuis la localisation de l'utilisateur.</p>
+     *
+     * @param visitedLocation la localisation de l'utilisateur
+     * @return une liste de cinq {@link NearbyAttractionDTO} représentant les attractions les plus proches
+     */
 	public List<NearbyAttractionDTO> getFiveNearestByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> attractions = gpsUtil.getAttractions();
 
@@ -130,6 +141,13 @@ public class TourGuideService {
                 .collect(Collectors.toList());
 	}
 
+    /**
+     * Crée un objet {@link NearbyAttractionDTO} pour une attraction donnée et une localisation d'utilisateur.
+     *
+     * @param attraction l'attraction concernée
+     * @param visitedLocation la localisation de l'utilisateur
+     * @return un {@link NearbyAttractionDTO} avec les informations de distance et de récompense
+     */
     private NearbyAttractionDTO createNearbyAttractionDTO(Attraction attraction, VisitedLocation visitedLocation) {
         return new NearbyAttractionDTO(
                 attraction.attractionName,
