@@ -81,6 +81,13 @@ public class TourGuideService {
 		return providers;
 	}
 
+    /**
+     * Repère la localisation actuelle d'un utilisateur, l'ajoute à sa liste de visites
+     * et calcule les récompenses associées à cette visite.
+     *
+     * @param user l'utilisateur dont la localisation doit être suivie
+     * @return la {@link VisitedLocation} correspondant à la localisation enregistrée
+     */
 	public VisitedLocation trackUserLocation(User user) {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
@@ -88,6 +95,16 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
+    /**
+     * Repère les localisations de tous les utilisateurs passés en paramètre de manière
+     * parallèle, en utilisant un pool de threads dimensionné en fonction du nombre de cœurs
+     * disponibles sur la machine. Chaque utilisateur est traité de manière asynchrone.
+     *
+     * <p>Cette méthode permet de réduire le temps total de traitement lorsqu'il y a un grand
+     * nombre d'utilisateurs.</p>
+     *
+     * @param users la liste des utilisateurs dont les localisations doivent être suivies
+     */
     public void trackUsersLocationsParallel(List<User> users) {
         int cores = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(cores*4);

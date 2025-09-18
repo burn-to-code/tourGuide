@@ -38,6 +38,20 @@ public class RewardsService {
         proximityBuffer = defaultProximityBuffer;
     }
 
+    /**
+     * Calcule et attribue les récompenses pour un utilisateur donné.
+     *
+     * <p>Pour chaque localisation visitée de l'utilisateur, cette méthode parcourt
+     * la liste des attractions (en parallèle) et vérifie si l'utilisateur est
+     * proche d'une attraction et n'a pas encore reçu de récompense pour celle-ci.
+     * Si ces conditions sont remplies, une nouvelle récompense est ajoutée
+     * à l'utilisateur.</p>
+     *
+     * <p>Cette méthode est optimisée pour le traitement parallèle sur la liste
+     * des attractions afin de réduire le temps de calcul.</p>
+     *
+     * @param user l'utilisateur pour lequel les récompenses doivent être calculées
+     */
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 
@@ -46,6 +60,16 @@ public class RewardsService {
                 .forEach(a -> user.addUserReward(new UserReward(visitedLocation, a, getRewardPoints(a, user)))));
 	}
 
+    /**
+     * Calcule les récompenses pour une liste d'utilisateurs en parallèle.
+     *
+     * <p>Cette méthode utilise un pool de threads dont la taille est proportionnelle
+     * au nombre de cœurs disponibles pour paralléliser le calcul des récompenses
+     * pour tous les utilisateurs de la liste. Chaque utilisateur est traité de
+     * manière asynchrone avec {@link CompletableFuture}.</p>
+     *
+     * @param users la liste des utilisateurs pour lesquels les récompenses doivent être calculées
+     */
     public void calculateRewardsForAllUsers(List<User> users) {
         int cores = Runtime.getRuntime().availableProcessors();
         ExecutorService ex =  Executors.newFixedThreadPool(cores*4);
