@@ -21,12 +21,12 @@ public class RewardsService {
     // proximity in miles
     private final int defaultProximityBuffer = 10;
     private int proximityBuffer = defaultProximityBuffer;
-    private final GpsUtil gpsUtil;
     private final RewardCentral rewardsCentral;
+    private final List<Attraction> attractions;
 
     public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
-        this.gpsUtil = gpsUtil;
         this.rewardsCentral = rewardCentral;
+        this.attractions = gpsUtil.getAttractions();
     }
 
     public void setProximityBuffer(int proximityBuffer) {
@@ -40,16 +40,15 @@ public class RewardsService {
 
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
 
-        userLocations.forEach(visitedLocation -> attractions.stream()
+        userLocations.forEach(visitedLocation -> attractions.parallelStream()
                 .filter(a -> (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) && nearAttraction(visitedLocation, a))
                 .forEach(a -> user.addUserReward(new UserReward(visitedLocation, a, getRewardPoints(a, user)))));
 	}
 
     public void calculateRewardsForAllUsers(List<User> users) {
         int cores = Runtime.getRuntime().availableProcessors();
-        ExecutorService ex =  Executors.newFixedThreadPool(cores*3);
+        ExecutorService ex =  Executors.newFixedThreadPool(cores*4);
 
         try {
             List<CompletableFuture<Void>> futures = users.stream()

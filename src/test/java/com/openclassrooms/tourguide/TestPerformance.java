@@ -85,7 +85,6 @@ public class TestPerformance {
         allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
 		StopWatch stopWatch = new StopWatch();
-
 		stopWatch.start();
 
 		rewardsService.calculateRewardsForAllUsers(allUsers);

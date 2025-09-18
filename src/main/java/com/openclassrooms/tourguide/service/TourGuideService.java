@@ -90,7 +90,7 @@ public class TourGuideService {
 
     public void trackUsersLocationsParallel(List<User> users) {
         int cores = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newFixedThreadPool(cores*2);
+        ExecutorService executor = Executors.newFixedThreadPool(cores*4);
 
         try {
             List<CompletableFuture<VisitedLocation>> futures = users.stream()
@@ -125,6 +125,7 @@ public class TourGuideService {
         );
     }
 
+    @SuppressWarnings("unused")
     public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
         List<Attraction> nearbyAttractions = new ArrayList<>();
         for (Attraction attraction : gpsUtil.getAttractions()) {
