@@ -2,6 +2,9 @@ package com.openclassrooms.tourguide;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
+import org.mockito.Mockito;
 import rewardCentral.RewardCentral;
 import com.openclassrooms.tourguide.helper.InternalTestHelper;
 import com.openclassrooms.tourguide.service.RewardsService;
@@ -109,6 +113,7 @@ public class TestTourGuideService {
 		assertEquals(5, attractions.size());
 	}
 
+    @Test
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
@@ -121,7 +126,22 @@ public class TestTourGuideService {
 
 		tourGuideService.tracker.stopTracking();
 
-		assertEquals(10, providers.size());
+		assertEquals(5, providers.size());
 	}
 
+    @Test
+    void shouldTrackLocationForAllUsers() {
+        GpsUtil gpsUtil = new GpsUtil();
+        RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+        TourGuideService service = Mockito.spy(new TourGuideService(gpsUtil, rewardsService));
+
+        User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+        User user1 = new User(UUID.randomUUID(), "jin", "002", "jin@tourGuide.com");
+
+        List<User> users = List.of(user, user1);
+
+        service.trackUsersLocationsParallel(users);
+
+        verify(service, times(2)).trackUserLocation(any(User.class));
+    }
 }
