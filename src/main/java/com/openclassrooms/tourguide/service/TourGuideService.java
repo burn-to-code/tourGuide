@@ -34,6 +34,7 @@ public class TourGuideService {
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
 
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
@@ -109,8 +110,6 @@ public class TourGuideService {
      * @param users la liste des utilisateurs dont les localisations doivent être suivies
      */
     public void trackUsersLocationsParallel(List<User> users) {
-        int cores = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newFixedThreadPool(cores*4);
 
         try {
             List<CompletableFuture<VisitedLocation>> futures = users.stream()
@@ -118,6 +117,8 @@ public class TourGuideService {
                     .toList();
 
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        }catch (Exception e ) {
+            logger.error("Error while tracking users locations", e);
         } finally {
             executor.shutdown();
         }
@@ -178,7 +179,7 @@ public class TourGuideService {
 
 	/**********************************************************************************
 	 * Methods Below: For Internal Testing
-	 * 
+	 *
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes
