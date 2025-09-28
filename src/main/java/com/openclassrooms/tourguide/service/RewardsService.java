@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -19,14 +21,16 @@ public class RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
     // proximity in miles
+    private final Logger logger = LoggerFactory.getLogger(RewardsService.class);
     private final int defaultProximityBuffer = 10;
     private int proximityBuffer = defaultProximityBuffer;
     private final RewardCentral rewardsCentral;
-    private final List<Attraction> attractions;
+    private final GpsUtil gpsUtil;
+    private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 4);
 
     public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
         this.rewardsCentral = rewardCentral;
-        this.attractions = gpsUtil.getAttractions();
+        this.gpsUtil = gpsUtil;
     }
 
     public void setProximityBuffer(int proximityBuffer) {
@@ -54,6 +58,7 @@ public class RewardsService {
      */
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
+        List<Attraction> attractions = gpsUtil.getAttractions();
 
         userLocations.forEach(visitedLocation -> attractions.parallelStream()
                 .filter(a -> (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) && nearAttraction(visitedLocation, a))
@@ -71,17 +76,18 @@ public class RewardsService {
      * @param users la liste des utilisateurs pour lesquels les récompenses doivent être calculées
      */
     public void calculateRewardsForAllUsers(List<User> users) {
-        int cores = Runtime.getRuntime().availableProcessors();
-        ExecutorService ex =  Executors.newFixedThreadPool(cores*4);
 
         try {
             List<CompletableFuture<Void>> futures = users.stream()
-                    .map(user -> CompletableFuture.runAsync(() -> calculateRewards(user), ex))
+                    .map(user -> CompletableFuture.runAsync(() -> calculateRewards(user), executor))
                     .toList();
 
             CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        } finally {
-            ex.shutdown();
+        } catch (Exception e) {
+            logger.error("Error while calculating rewards for all users", e);
+        }
+        finally {
+            executor.shutdown();
         }
     }
 
